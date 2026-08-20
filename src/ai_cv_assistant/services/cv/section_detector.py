@@ -2,6 +2,7 @@ import re
 
 from src.ai_cv_assistant.schemas.cv_sections import (
     CVSectionType,
+    DetectedCV,
     DetectedCVSection,
 )
 
