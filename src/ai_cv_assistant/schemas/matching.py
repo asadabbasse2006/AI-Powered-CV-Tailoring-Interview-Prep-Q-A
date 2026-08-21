@@ -26,6 +26,7 @@ class MatchSummary(BaseModel):
     partial_matches: int = 0
     no_evidence: int = 0
     conflicts: int = 0
+    score: float = 0.0
 
 class CandidateJobMatch(BaseModel):
     results: list[MatchResult] = Field(default_factory=list)
