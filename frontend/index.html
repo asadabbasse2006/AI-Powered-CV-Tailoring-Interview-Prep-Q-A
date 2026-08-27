@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI CV Assistant</title>
+
+    <meta
+        name="description"
+        content="AI-powered CV analysis, tailoring, and interview preparation."
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+        <div class="container header-container">
+
+            <a href="#" class="logo">
+                <span class="logo-icon">AI</span>
+                <span>CV Assistant</span>
+            </a>
+
+            <nav class="nav">
+                <a href="#analyze">Analyze</a>
+                <a href="#results">Results</a>
+                <a href="#interview">Interview Prep</a>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main>
+
+        <!-- =================================================
+             HERO SECTION
+        ================================================== -->
+
+        <section class="hero">
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <span class="badge">
+                        AI-Powered Career Assistant
+                    </span>
+
+                    <h1>
+                        Tailor Your CV.
+                        <span>Prepare for Your Interview.</span>
+                    </h1>
+
+                    <p>
+                        Analyze your CV against a job description,
+                        identify skill gaps, generate an ATS-friendly
+                        tailored CV, and prepare for your interview
+                        with AI-powered questions and answers.
+                    </p>
+
+                    <a href="#analyze" class="primary-button">
+                        Analyze My CV
+                    </a>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             ANALYSIS INPUT SECTION
+        ================================================== -->
+
+        <section id="analyze" class="analysis-section">
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-label">01</span>
+
+                    <h2>
+                        Analyze Your CV
+                    </h2>
+
+                    <p>
+                        Upload your CV and provide the job description
+                        you're applying for.
+                    </p>
+                </div>
+
+
+                <div class="analysis-form">
+
+                    <!-- =====================================
+                         CV UPLOAD
+                    ====================================== -->
+
+                    <div class="input-card">
+
+                        <div class="card-header">
+                            <div>
+                                <span class="card-number">01</span>
+                                <h3>Upload Your CV</h3>
+                            </div>
+                        </div>
+
+                        <p class="card-description">
+                            Upload your CV in PDF format.
+                        </p>
+
+                        <label
+                            for="cv-file"
+                            class="file-upload-area"
+                            id="file-upload-area"
+                        >
+
+                            <div class="upload-icon">
+                                ↑
+                            </div>
+
+                            <strong>
+                                Click to upload your CV
+                            </strong>
+
+                            <span>
+                                PDF files only
+                            </span>
+
+                            <input
+                                type="file"
+                                id="cv-file"
+                                name="cv"
+                                accept=".pdf,application/pdf"
+                                hidden
+                            >
+
+                        </label>
+
+                        <div
+                            id="selected-file"
+                            class="selected-file hidden"
+                        >
+                            <span id="selected-file-name"></span>
+
+                            <button
+                                type="button"
+                                id="remove-file"
+                                class="remove-file"
+                            >
+                                Remove
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         JOB DESCRIPTION
+                    ====================================== -->
+
+                    <div class="input-card">
+
+                        <div class="card-header">
+                            <div>
+                                <span class="card-number">02</span>
+                                <h3>Job Description</h3>
+                            </div>
+                        </div>
+
+                        <p class="card-description">
+                            Paste the job description you're applying for.
+                        </p>
+
+                        <label
+                            for="job-description"
+                            class="input-label"
+                        >
+                            Job Description
+                        </label>
+
+                        <textarea
+                            id="job-description"
+                            name="job_description"
+                            rows="14"
+                            placeholder="Paste the job description here..."
+                        ></textarea>
+
+                        <div class="textarea-footer">
+                            <span id="character-count">
+                                0 characters
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     ANALYZE BUTTON
+                ========================================== -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        id="analyze-button"
+                        class="primary-button large-button"
+                    >
+                        Analyze CV
+                    </button>
+
+                    <p class="form-note">
+                        Your CV will be processed securely for this analysis.
+                    </p>
+
+                </div>
+
+
+                <!-- =========================================
+                     LOADING STATE
+                ========================================== -->
+
+                <div
+                    id="loading-state"
+                    class="loading-state hidden"
+                >
+
+                    <div class="loading-spinner"></div>
+
+                    <h3>
+                        Analyzing your CV...
+                    </h3>
+
+                    <p>
+                        Our AI is analyzing your CV, matching it
+                        against the job description, tailoring your
+                        CV, and preparing interview questions.
+                    </p>
+
+                    <span>
+                        This may take a few seconds.
+                    </span>
+
+                </div>
+
+
+                <!-- =========================================
+                     ERROR MESSAGE
+                ========================================== -->
+
+                <div
+                    id="error-message"
+                    class="error-message hidden"
+                    role="alert"
+                >
+                    <strong>
+                        Analysis failed
+                    </strong>
+
+                    <p id="error-text">
+                        Something went wrong.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- =================================================
+             RESULTS SECTION
+        ================================================== -->
+
+        <section
+            id="results"
+            class="results-section hidden"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="section-label">02</span>
+
+                    <h2>
+                        Analysis Results
+                    </h2>
+
+                    <p>
+                        Here's how your CV matches the target position.
+                    </p>
+                </div>
+
+
+                <!-- =========================================
+                     CANDIDATE + JOB OVERVIEW
+                ========================================== -->
+
+                <div class="overview-grid">
+
+                    <!-- Candidate -->
+
+                    <div class="result-card">
+
+                        <div class="result-card-header">
+                            <span class="result-icon">👤</span>
+
+                            <div>
+                                <span class="card-label">
+                                    Candidate
+                                </span>
+
+                                <h3 id="candidate-name">
+                                    —
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="candidate-details">
+
+                            <p id="candidate-email">
+                                —
+                            </p>
+
+                            <p id="candidate-location">
+                                —
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Target Job -->
+
+                    <div class="result-card">
+
+                        <div class="result-card-header">
+                            <span class="result-icon">💼</span>
+
+                            <div>
+                                <span class="card-label">
+                                    Target Position
+                                </span>
+
+                                <h3 id="job-title">
+                                    —
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="job-details">
+
+                            <p id="job-company">
+                                —
+                            </p>
+
+                            <p id="job-location">
+                                —
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     MATCH SCORE
+                ========================================== -->
+
+                <div class="match-score-card">
+
+                    <div class="score-content">
+
+                        <span class="card-label">
+                            Overall Match
+                        </span>
+
+                        <div class="score">
+                            <span id="match-score">
+                                0
+                            </span>
+                            <small>%</small>
+                        </div>
+
+                        <p>
+                            Based on your CV evidence and
+                            job requirements.
+                        </p>
+
+                    </div>
+
+                    <div class="score-statistics">
+
+                        <div class="stat">
+                            <span id="strong-matches">
+                                0
+                            </span>
+
+                            <small>
+                                Strong Matches
+                            </small>
+                        </div>
+
+                        <div class="stat">
+                            <span id="partial-matches">
+                                0
+                            </span>
+
+                            <small>
+                                Partial Matches
+                            </small>
+                        </div>
+
+                        <div class="stat">
+                            <span id="no-evidence">
+                                0
+                            </span>
+
+                            <small>
+                                No Evidence
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     REQUIREMENT MATCHING
+                ========================================== -->
+
+                <div class="matching-section">
+
+                    <div class="section-heading small">
+                        <span class="section-label">03</span>
+
+                        <h2>
+                            Requirement Matching
+                        </h2>
+
+                        <p>
+                            See how your experience aligns with
+                            each job requirement.
+                        </p>
+                    </div>
+
+                    <div
+                        id="matching-results"
+                        class="matching-results"
+                    >
+                        <!-- JavaScript will populate this -->
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     SKILLS
+                ========================================== -->
+
+                <div class="skills-section">
+
+                    <div class="section-heading small">
+                        <span class="section-label">04</span>
+
+                        <h2>
+                            Your Skills
+                        </h2>
+                    </div>
+
+                    <div
+                        id="skills-list"
+                        class="skills-list"
+                    >
+                        <!-- JavaScript will populate this -->
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TAILORED CV SECTION
+        ================================================== -->
+
+        <section
+            id="tailored-cv"
+            class="tailored-cv-section hidden"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-label">05</span>
+
+                    <h2>
+                        Tailored CV
+                    </h2>
+
+                    <p>
+                        Your CV has been tailored to better align
+                        with the target position while preserving
+                        your actual experience.
+                    </p>
+
+                </div>
+
+
+                <div class="cv-actions">
+
+                    <button
+                        type="button"
+                        id="copy-cv"
+                        class="secondary-button"
+                    >
+                        Copy CV
+                    </button>
+
+                    <button
+                        type="button"
+                        id="download-cv"
+                        class="secondary-button"
+                    >
+                        Download Markdown
+                    </button>
+
+                </div>
+
+
+                <div class="cv-preview">
+
+                    <pre id="tailored-cv-content"></pre>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             INTERVIEW PREPARATION
+        ================================================== -->
+
+        <section
+            id="interview"
+            class="interview-section hidden"
+        >
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-label">06</span>
+
+                    <h2>
+                        Interview Preparation
+                    </h2>
+
+                    <p>
+                        Practice questions generated specifically
+                        for this position and your experience.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="interview-questions"
+                    class="interview-questions"
+                >
+                    <!-- JavaScript will populate this -->
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             START AGAIN
+        ================================================== -->
+
+        <section
+            id="new-analysis"
+            class="new-analysis-section hidden"
+        >
+
+            <div class="container">
+
+                <button
+                    type="button"
+                    id="new-analysis-button"
+                    class="primary-button"
+                >
+                    Analyze Another CV
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div class="container footer-container">
+
+            <div>
+                <strong>
+                    AI CV Assistant
+                </strong>
+
+                <p>
+                    AI-powered CV analysis and interview preparation.
+                </p>
+            </div>
+
+            <p>
+                Built with FastAPI, Python & AI.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>

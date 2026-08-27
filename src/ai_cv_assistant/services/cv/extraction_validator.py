@@ -9,6 +9,33 @@ from src.ai_cv_assistant.schemas.extraction import CVExtractionResult
 from src.ai_cv_assistant.services.cv.evidence_grounder import EvidenceGrounder
 
 
+def _normalize_url(value: str | None) -> str | None:
+    if value is None:
+        return None
+
+    value = value.strip()
+
+    if not value:
+        return None
+
+    if value.startswith(("http://", "https://")):
+        return value
+
+    if value.startswith("linkedin.com/"):
+        return f"https://{value}"
+
+    if value.startswith("in/"):
+        return f"https://linkedin.com/{value}"
+
+    if value.startswith("github.com/"):
+        return f"https://{value}"
+
+    if ".github.io" in value:
+        return f"https://{value}"
+
+    return value
+
+
 class ExtractionValidator:
     """
     Converts an LLM-generated CVExtractionResult into a trusted
@@ -63,9 +90,9 @@ class ExtractionValidator:
             email=extraction.email,
             phone=extraction.phone,
             location=extraction.location,
-            linkedin_url=extraction.linkedin_url,
-            github_url=extraction.github_url,
-            portfolio_url=extraction.portfolio_url,
+            linkedin_url=_normalize_url(extraction.linkedin_url),
+            github_url = _normalize_url(extraction.github_url),
+            portfolio_url = _normalize_url(extraction.portfolio_url),
             summary=extraction.summary,
             education=extraction.education,
             experience=extraction.experience,
@@ -75,6 +102,32 @@ class ExtractionValidator:
             achievements=extraction.achievements,
             evidence=evidence,
         )
+
+    def _normalize_url(value: str | None) -> str | None:
+        if value is None:
+            return None
+
+        value = value.strip()
+
+        if not value:
+            return None
+
+        if value.startswith(("http://", "https://")):
+            return value
+
+        if value.startswith("linkedin.com/"):
+            return f"https://{value}"
+
+        if value.startswith("in/"):
+            return f"https://linkedin.com/{value}"
+
+        if value.startswith("github.com/"):
+            return f"https://{value}"
+
+        if ".github.io" in value:
+            return f"https://{value}"
+
+        return value
 
     def _validate_skills(
         self,

@@ -25,11 +25,12 @@ class CVExtractor:
 
         prompt = self._build_prompt(cv_text)
 
-        response = self.llm_client.generate_structured(prompt)
+        response = self.llm_client.generate_structured(prompt,response_schema=CVExtractionResult)
 
         return CVExtractionResult.model_validate(response)
 
-    def _build_prompt(self, cv_text: str) -> str:
+    @staticmethod
+    def _build_prompt(cv_text: str) -> str:
         return f"""
 You are a CV information extraction system.
 

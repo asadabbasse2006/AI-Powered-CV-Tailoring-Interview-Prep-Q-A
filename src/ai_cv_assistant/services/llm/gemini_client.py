@@ -37,6 +37,7 @@ class GeminiLLMClient(LLMClient):
         prompt: str,
         response_schema: Any | None = None,
     ) -> dict[str, Any]:
+
         if not isinstance(prompt, str):
             raise TypeError("Prompt must be a string.")
 
@@ -48,10 +49,17 @@ class GeminiLLMClient(LLMClient):
         }
 
         if response_schema is not None:
+            if hasattr(response_schema, "model_json_schema"):
+                response_json_schema = (
+                    response_schema.model_json_schema()
+                )
+            else:
+                response_json_schema = response_schema
+
             config_kwargs.update(
                 {
                     "response_mime_type": "application/json",
-                    "response_schema": response_schema,
+                    "response_json_schema": response_json_schema,
                 }
             )
 

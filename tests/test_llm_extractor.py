@@ -2,13 +2,17 @@ from src.ai_cv_assistant.services.cv.llm_extractor import CVExtractor
 
 
 class FakeLLMClient:
-    def __init__(self, response: dict):
+    def __init__(self, response):
         self.response = response
         self.last_prompt = None
+        self.last_response_schema = None
 
-    def generate_structured(self, prompt: str) -> dict:
+    def generate_structured(self, prompt, response_schema=None):
         self.last_prompt = prompt
+        self.last_response_schema = response_schema
         return self.response
+
+
 
 def test_extract_cv():
     response = {
