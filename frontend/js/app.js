@@ -5,7 +5,8 @@
    CONFIGURATION
 ========================================================= */
 
-const API_BASE_URL = "http://127.0.0.1:8000/api/v1";
+const API_BASE_URL =
+    "http://127.0.0.1:8000/api/v1";
 
 
 /* =========================================================
@@ -30,81 +31,144 @@ const elements = {};
    INITIALIZATION
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    initializeElements();
+        initializeElements();
 
-    attachEventListeners();
+        attachEventListeners();
 
-    updateCharacterCount();
+        updateCharacterCount();
 
-});
+    }
+);
 
 
 /* =========================================================
-   INITIALIZE DOM
+   INITIALIZE ELEMENTS
 ========================================================= */
 
 function initializeElements() {
 
+    elements.form =
+        document.getElementById(
+            "analysis-form"
+        );
+
+
     elements.cvInput =
-        document.getElementById("cv-file");
+        document.getElementById(
+            "cv-file"
+        );
+
 
     elements.fileUploadArea =
-        document.getElementById("file-upload-area");
+        document.getElementById(
+            "file-upload-area"
+        );
+
 
     elements.selectedFile =
-        document.getElementById("selected-file");
+        document.getElementById(
+            "selected-file"
+        );
+
 
     elements.selectedFileName =
-        document.getElementById("selected-file-name");
+        document.getElementById(
+            "selected-file-name"
+        );
+
 
     elements.removeFileButton =
-        document.getElementById("remove-file");
+        document.getElementById(
+            "remove-file"
+        );
+
 
     elements.jobDescription =
-        document.getElementById("job-description");
+        document.getElementById(
+            "job-description"
+        );
+
 
     elements.charCount =
-        document.getElementById("character-count");
+        document.getElementById(
+            "match-score"
+        );
+
 
     elements.analyzeButton =
-        document.getElementById("analyze-button");
+        document.getElementById(
+            "analyze-button"
+        );
+
 
     elements.loadingState =
-        document.getElementById("loading-state");
+        document.getElementById(
+            "loading-state"
+        );
+
 
     elements.errorMessage =
-        document.getElementById("error-message");
+        document.getElementById(
+            "error-message"
+        );
+
 
     elements.errorText =
-        document.getElementById("error-text");
+        document.getElementById(
+            "error-text"
+        );
+
 
     elements.resultsSection =
-        document.getElementById("results");
+        document.getElementById(
+            "results"
+        );
+
 
     elements.tailoredCVSection =
-        document.getElementById("tailored-cv");
+        document.getElementById(
+            "tailored-cv"
+        );
+
 
     elements.interviewSection =
-        document.getElementById("interview");
+        document.getElementById(
+            "interview"
+        );
+
 
     elements.newAnalysisSection =
-        document.getElementById("new-analysis");
+        document.getElementById(
+            "new-analysis"
+        );
+
 
     elements.newAnalysisButton =
-        document.getElementById("new-analysis-button");
+        document.getElementById(
+            "new-analysis-button"
+        );
+
 
     elements.copyCVButton =
-        document.getElementById("copy-cv");
+        document.getElementById(
+            "copy-cv"
+        );
+
 
     elements.downloadCVButton =
-        document.getElementById("download-cv");
+        document.getElementById(
+            "download-cv"
+        );
+
 
     elements.tailoredCVContent =
-        document.getElementById("tailored-cv-content");
-
-    console.log("DOM initialized:", elements);
+        document.getElementById(
+            "tailored-cv-content"
+        );
 }
 
 
@@ -114,18 +178,15 @@ function initializeElements() {
 
 function attachEventListeners() {
 
-    /* CV selection */
-
     if (elements.cvInput) {
 
         elements.cvInput.addEventListener(
             "change",
             handleFileSelection
         );
+
     }
 
-
-    /* Remove CV */
 
     if (elements.removeFileButton) {
 
@@ -133,10 +194,9 @@ function attachEventListeners() {
             "click",
             removeSelectedFile
         );
+
     }
 
-
-    /* Character counter */
 
     if (elements.jobDescription) {
 
@@ -144,28 +204,19 @@ function attachEventListeners() {
             "input",
             updateCharacterCount
         );
+
     }
 
 
-    /*
-     * IMPORTANT:
-     *
-     * There is NO form in your HTML.
-     *
-     * Therefore we listen directly to
-     * the Analyze button.
-     */
+    if (elements.form) {
 
-    if (elements.analyzeButton) {
-
-        elements.analyzeButton.addEventListener(
-            "click",
+        elements.form.addEventListener(
+            "submit",
             handleAnalysisSubmit
         );
+
     }
 
-
-    /* New analysis */
 
     if (elements.newAnalysisButton) {
 
@@ -173,10 +224,9 @@ function attachEventListeners() {
             "click",
             resetApplication
         );
+
     }
 
-
-    /* Copy CV */
 
     if (elements.copyCVButton) {
 
@@ -184,10 +234,9 @@ function attachEventListeners() {
             "click",
             copyTailoredCV
         );
+
     }
 
-
-    /* Download CV */
 
     if (elements.downloadCVButton) {
 
@@ -195,6 +244,7 @@ function attachEventListeners() {
             "click",
             downloadTailoredCV
         );
+
     }
 }
 
@@ -205,18 +255,24 @@ function attachEventListeners() {
 
 function handleFileSelection(event) {
 
-    const file = event.target.files[0];
+    const file =
+        event.target.files[0];
+
 
     if (!file) {
         return;
     }
 
 
-    /* Validate PDF */
+    /*
+     * Validate PDF
+     */
 
     if (
         file.type !== "application/pdf" &&
-        !file.name.toLowerCase().endsWith(".pdf")
+        !file.name
+            .toLowerCase()
+            .endsWith(".pdf")
     ) {
 
         showError(
@@ -225,16 +281,17 @@ function handleFileSelection(event) {
 
         elements.cvInput.value = "";
 
-        state.selectedFile = null;
-
         return;
     }
 
 
-    /* Validate size */
+    /*
+     * Validate size
+     */
 
     const maxSize =
         10 * 1024 * 1024;
+
 
     if (file.size > maxSize) {
 
@@ -244,13 +301,9 @@ function handleFileSelection(event) {
 
         elements.cvInput.value = "";
 
-        state.selectedFile = null;
-
         return;
     }
 
-
-    /* Save file */
 
     state.selectedFile = file;
 
@@ -262,15 +315,18 @@ function handleFileSelection(event) {
 
 function displaySelectedFile(file) {
 
-    if (
-        !elements.selectedFile ||
-        !elements.selectedFileName
-    ) {
+    if (!elements.selectedFile) {
         return;
     }
 
-    elements.selectedFileName.textContent =
-        `${file.name} (${formatFileSize(file.size)})`;
+
+    if (elements.selectedFileName) {
+
+        elements.selectedFileName.textContent =
+            `${file.name} (${formatFileSize(file.size)})`;
+
+    }
+
 
     elements.selectedFile.classList.remove(
         "hidden"
@@ -282,18 +338,19 @@ function removeSelectedFile() {
 
     state.selectedFile = null;
 
+
     if (elements.cvInput) {
         elements.cvInput.value = "";
     }
+
 
     if (elements.selectedFile) {
 
         elements.selectedFile.classList.add(
             "hidden"
         );
-    }
 
-    hideError();
+    }
 }
 
 
@@ -303,12 +360,15 @@ function formatFileSize(bytes) {
         return `${bytes} B`;
     }
 
+
     if (bytes < 1024 * 1024) {
 
         return `${(
             bytes / 1024
         ).toFixed(1)} KB`;
+
     }
+
 
     return `${(
         bytes /
@@ -318,7 +378,7 @@ function formatFileSize(bytes) {
 
 
 /* =========================================================
-   CHARACTER COUNTER
+   CHARACTER COUNT
 ========================================================= */
 
 function updateCharacterCount() {
@@ -330,8 +390,12 @@ function updateCharacterCount() {
         return;
     }
 
+
     const count =
-        elements.jobDescription.value.length;
+        elements.jobDescription
+            .value
+            .length;
+
 
     elements.charCount.textContent =
         `${count.toLocaleString()} characters`;
@@ -339,19 +403,19 @@ function updateCharacterCount() {
 
 
 /* =========================================================
-   ANALYSIS
+   ANALYSIS SUBMISSION
 ========================================================= */
 
-async function handleAnalysisSubmit() {
+async function handleAnalysisSubmit(event) {
 
-    console.log("Analyze button clicked.");
+    event.preventDefault();
 
     hideError();
 
 
-    /* -------------------------------------------------------
-       Validate CV
-    ------------------------------------------------------- */
+    /*
+     * Validate CV
+     */
 
     if (!state.selectedFile) {
 
@@ -363,9 +427,9 @@ async function handleAnalysisSubmit() {
     }
 
 
-    /* -------------------------------------------------------
-       Validate job description
-    ------------------------------------------------------- */
+    /*
+     * Validate job description
+     */
 
     const jobDescription =
         elements.jobDescription
@@ -383,18 +447,14 @@ async function handleAnalysisSubmit() {
     }
 
 
-    /* -------------------------------------------------------
-       Start loading
-    ------------------------------------------------------- */
+    /*
+     * Show loading
+     */
 
     setAnalysisLoading(true);
 
 
     try {
-
-        /* ---------------------------------------------------
-           Create multipart form data
-        --------------------------------------------------- */
 
         const formData =
             new FormData();
@@ -417,10 +477,6 @@ async function handleAnalysisSubmit() {
         );
 
 
-        /* ---------------------------------------------------
-           Send request
-        --------------------------------------------------- */
-
         const response =
             await fetch(
                 `${API_BASE_URL}/analyze`,
@@ -431,42 +487,31 @@ async function handleAnalysisSubmit() {
             );
 
 
+        const data =
+            await parseResponse(
+                response
+            );
+
+
         console.log(
             "API response:",
-            response.status
-        );
-
-
-        /* ---------------------------------------------------
-           Parse response
-        --------------------------------------------------- */
-
-        const data =
-            await parseResponse(response);
-
-
-        console.log(
-            "API data:",
             data
         );
 
-
-        /* ---------------------------------------------------
-           Handle API error
-        --------------------------------------------------- */
 
         if (!response.ok) {
 
             throw new Error(
                 data?.detail ||
-                `Analysis failed with status ${response.status}.`
+                "CV analysis failed."
             );
+
         }
 
 
-        /* ---------------------------------------------------
-           Save result
-        --------------------------------------------------- */
+        /*
+         * Save result
+         */
 
         state.analysisResult =
             data;
@@ -477,33 +522,22 @@ async function handleAnalysisSubmit() {
             null;
 
 
-        console.log(
-            "Analysis completed:",
-            state.requestId
+        /*
+         * Render everything
+         */
+
+        renderAnalysisResult(
+            data
         );
 
-
-        /* ---------------------------------------------------
-           Render results
-        --------------------------------------------------- */
-
-        renderAnalysisResult(data);
-
-
-        /* ---------------------------------------------------
-           Stop loading
-        --------------------------------------------------- */
 
         setAnalysisLoading(false);
 
 
-        /* ---------------------------------------------------
-           Scroll
-        --------------------------------------------------- */
-
         scrollToResults();
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Analysis request failed:",
@@ -518,6 +552,7 @@ async function handleAnalysisSubmit() {
             error.message ||
             "Unable to complete CV analysis."
         );
+
     }
 }
 
@@ -541,6 +576,7 @@ async function parseResponse(response) {
     ) {
 
         return await response.json();
+
     }
 
 
@@ -560,7 +596,9 @@ async function parseResponse(response) {
    LOADING
 ========================================================= */
 
-function setAnalysisLoading(isLoading) {
+function setAnalysisLoading(
+    isLoading
+) {
 
     if (elements.analyzeButton) {
 
@@ -572,19 +610,23 @@ function setAnalysisLoading(isLoading) {
 
             elements.analyzeButton.dataset
                 .originalText =
-                elements.analyzeButton.textContent;
+                elements.analyzeButton.textContent
+                    .trim();
 
 
             elements.analyzeButton.textContent =
                 "Analyzing...";
 
-        } else {
+        }
+        else {
 
             elements.analyzeButton.textContent =
                 elements.analyzeButton.dataset
                     .originalText ||
                 "Analyze CV";
+
         }
+
     }
 
 
@@ -594,6 +636,7 @@ function setAnalysisLoading(isLoading) {
             "hidden",
             !isLoading
         );
+
     }
 }
 
@@ -622,6 +665,7 @@ function showError(message) {
 
         elements.errorText.textContent =
             message;
+
     }
 
 
@@ -638,12 +682,13 @@ function hideError() {
         elements.errorMessage.classList.add(
             "hidden"
         );
+
     }
 }
 
 
 /* =========================================================
-   COMPLETE RESULT
+   RENDER COMPLETE RESULT
 ========================================================= */
 
 function renderAnalysisResult(result) {
@@ -683,38 +728,28 @@ function renderAnalysisResult(result) {
     );
 
 
-    /* Show result sections */
+    /*
+     * Show sections
+     */
 
-    if (elements.resultsSection) {
-
-        elements.resultsSection.classList.remove(
-            "hidden"
-        );
-    }
-
-
-    if (elements.tailoredCVSection) {
-
-        elements.tailoredCVSection.classList.remove(
-            "hidden"
-        );
-    }
+    showSection(
+        elements.resultsSection
+    );
 
 
-    if (elements.interviewSection) {
-
-        elements.interviewSection.classList.remove(
-            "hidden"
-        );
-    }
+    showSection(
+        elements.tailoredCVSection
+    );
 
 
-    if (elements.newAnalysisSection) {
+    showSection(
+        elements.interviewSection
+    );
 
-        elements.newAnalysisSection.classList.remove(
-            "hidden"
-        );
-    }
+
+    showSection(
+        elements.newAnalysisSection
+    );
 }
 
 
@@ -722,49 +757,30 @@ function renderAnalysisResult(result) {
    CANDIDATE
 ========================================================= */
 
-function renderCandidate(candidate) {
+function renderCandidate(
+    candidate
+) {
 
-    const name =
-        document.getElementById(
-            "candidate-name"
-        );
-
-    const email =
-        document.getElementById(
-            "candidate-email"
-        );
-
-    const location =
-        document.getElementById(
-            "candidate-location"
-        );
+    setText(
+        "candidate-name",
+        candidate?.name ||
+        "Unknown Candidate"
+    );
 
 
-    if (name) {
-
-        name.textContent =
-            candidate?.name ||
-            "Unknown Candidate";
-    }
-
-
-    if (email) {
-
-        email.textContent =
-            candidate?.email ||
-            "No email available";
-    }
+    setText(
+        "candidate-email",
+        candidate?.email ||
+        "No email available"
+    );
 
 
-    if (location) {
+    setText(
+        "candidate-location",
+        candidate?.location ||
+        "Location not available"
+    );
 
-        location.textContent =
-            candidate?.location ||
-            "Location not available";
-    }
-
-
-    /* Skills */
 
     const skillsContainer =
         document.getElementById(
@@ -781,32 +797,38 @@ function renderCandidate(candidate) {
 
 
     const skills =
-        candidate?.skills ||
-        [];
+        candidate?.skills || [];
 
 
-    skills.forEach(skill => {
+    skills.forEach(
+        skill => {
 
-        const tag =
-            document.createElement(
-                "span"
-            );
-
-
-        tag.className =
-            "skill-tag";
+            const tag =
+                document.createElement(
+                    "span"
+                );
 
 
-        tag.textContent =
-            typeof skill === "string"
-                ? skill
-                : skill.name;
+            tag.className =
+                "skill-tag";
 
 
-        skillsContainer.appendChild(
-            tag
-        );
-    });
+            tag.textContent =
+                typeof skill === "string"
+                    ? skill
+                    : skill?.name || "";
+
+
+            if (tag.textContent) {
+
+                skillsContainer.appendChild(
+                    tag
+                );
+
+            }
+
+        }
+    );
 }
 
 
@@ -850,32 +872,24 @@ function renderMatch(match) {
 
 
     const summary =
-        match.summary ||
-        {};
+        match.summary || {};
 
 
-    /* Score */
+    /*
+     * Score
+     */
 
     const score =
-        document.getElementById(
-            "match-score"
+        Number(
+            summary.score ?? 0
         );
 
 
-    if (score) {
+    setText(
+        "match-score",
+        score
+    );
 
-        const numericScore =
-            Number(
-                summary.score ?? 0
-            );
-
-
-        score.textContent =
-            numericScore;
-    }
-
-
-    /* Statistics */
 
     setText(
         "strong-matches",
@@ -895,7 +909,9 @@ function renderMatch(match) {
     );
 
 
-    /* Requirements */
+    /*
+     * Requirements
+     */
 
     const container =
         document.getElementById(
@@ -912,112 +928,132 @@ function renderMatch(match) {
 
 
     const results =
-        match.results ||
-        [];
+        match.results || [];
 
 
-    results.forEach(item => {
+    if (results.length === 0) {
 
-        const wrapper =
-            document.createElement(
-                "div"
+        container.innerHTML =
+            "<p>No requirement matching data available.</p>";
+
+        return;
+    }
+
+
+    results.forEach(
+        item => {
+
+            const wrapper =
+                document.createElement(
+                    "div"
+                );
+
+
+            wrapper.className =
+                "match-item";
+
+
+            const header =
+                document.createElement(
+                    "div"
+                );
+
+
+            header.className =
+                "match-item-header";
+
+
+            const requirement =
+                document.createElement(
+                    "span"
+                );
+
+
+            requirement.className =
+                "match-requirement";
+
+
+            requirement.textContent =
+                getRequirementName(
+                    item
+                );
+
+
+            const status =
+                document.createElement(
+                    "span"
+                );
+
+
+            status.className =
+                `match-status ${
+                    item.status || ""
+                }`;
+
+
+            status.textContent =
+                formatStatus(
+                    item.status
+                );
+
+
+            header.appendChild(
+                requirement
             );
 
 
-        wrapper.className =
-            "match-item";
-
-
-        const header =
-            document.createElement(
-                "div"
+            header.appendChild(
+                status
             );
 
 
-        header.className =
-            "match-item-header";
+            const reason =
+                document.createElement(
+                    "p"
+                );
 
 
-        const requirement =
-            document.createElement(
-                "span"
+            reason.className =
+                "match-reason";
+
+
+            reason.textContent =
+                item.reason ||
+                "No additional information available.";
+
+
+            wrapper.appendChild(
+                header
             );
 
 
-        requirement.className =
-            "match-requirement";
-
-
-        requirement.textContent =
-            getRequirementName(item);
-
-
-        const status =
-            document.createElement(
-                "span"
+            wrapper.appendChild(
+                reason
             );
 
 
-        status.className =
-            `match-status ${item.status || ""}`;
-
-
-        status.textContent =
-            formatStatus(
-                item.status
+            container.appendChild(
+                wrapper
             );
 
-
-        header.appendChild(
-            requirement
-        );
-
-
-        header.appendChild(
-            status
-        );
-
-
-        const reason =
-            document.createElement(
-                "p"
-            );
-
-
-        reason.className =
-            "match-reason";
-
-
-        reason.textContent =
-            item.reason ||
-            "No additional information available.";
-
-
-        wrapper.appendChild(
-            header
-        );
-
-
-        wrapper.appendChild(
-            reason
-        );
-
-
-        container.appendChild(
-            wrapper
-        );
-    });
+        }
+    );
 }
 
 
 function getRequirementName(item) {
 
-    return (
-        item.requirement ||
-        item.requirement_id ||
-        item.name ||
-        "Requirement"
-    );
+    if (item?.requirement_id) {
+        return item.requirement_id;
+    }
+
+
+    if (item?.name) {
+        return item.name;
+    }
+
+
+    return "Requirement";
 }
 
 
@@ -1029,7 +1065,10 @@ function formatStatus(status) {
 
 
     return status
-        .replaceAll("_", " ")
+        .replaceAll(
+            "_",
+            " "
+        )
         .replace(
             /\b\w/g,
             letter =>
@@ -1042,7 +1081,9 @@ function formatStatus(status) {
    TAILORED CV
 ========================================================= */
 
-function renderTailoredCV(tailoredCV) {
+function renderTailoredCV(
+    tailoredCV
+) {
 
     if (!tailoredCV) {
         return;
@@ -1054,34 +1095,15 @@ function renderTailoredCV(tailoredCV) {
     }
 
 
-    let content = "";
-
-
-    if (
-        typeof tailoredCV === "string"
-    ) {
-
-        content =
-            tailoredCV;
-
-    } else if (
-        tailoredCV.markdown
-    ) {
-
-        content =
-            tailoredCV.markdown;
-
-    } else {
-
-        content =
-            buildCVMarkdown(
-                tailoredCV
-            );
-    }
+    const markdown =
+        tailoredCV.markdown ||
+        buildCVMarkdown(
+            tailoredCV
+        );
 
 
     elements.tailoredCVContent.textContent =
-        content;
+        markdown;
 }
 
 
@@ -1090,41 +1112,46 @@ function buildCVMarkdown(cv) {
     const lines = [];
 
 
-    if (cv.candidate_name) {
+    if (cv?.candidate_name) {
 
         lines.push(
             `# ${cv.candidate_name}`
         );
 
         lines.push("");
+
     }
 
 
     const sections =
-        cv.sections ||
-        [];
+        cv?.sections || [];
 
 
-    sections.forEach(section => {
+    sections.forEach(
+        section => {
 
-        lines.push(
-            `## ${section.title}`
-        );
-
-
-        lines.push("");
+            lines.push(
+                `## ${section.title}`
+            );
 
 
-        lines.push(
-            section.content || ""
-        );
+            lines.push("");
 
 
-        lines.push("");
-    });
+            lines.push(
+                section.content || ""
+            );
 
 
-    return lines.join("\n");
+            lines.push("");
+
+        }
+    );
+
+
+    return lines.join(
+        "\n"
+    );
 }
 
 
@@ -1135,11 +1162,6 @@ function buildCVMarkdown(cv) {
 function renderInterviewPreparation(
     interviewPreparation
 ) {
-
-    if (!interviewPreparation) {
-        return;
-    }
-
 
     const container =
         document.getElementById(
@@ -1155,6 +1177,15 @@ function renderInterviewPreparation(
     container.innerHTML = "";
 
 
+    if (!interviewPreparation) {
+
+        container.innerHTML =
+            "<p>No interview preparation available.</p>";
+
+        return;
+    }
+
+
     const questions =
         interviewPreparation.questions ||
         [];
@@ -1165,202 +1196,223 @@ function renderInterviewPreparation(
         [];
 
 
-    questions.forEach(question => {
+    if (questions.length === 0) {
 
-        const answer =
-            answers.find(
-                item =>
-                    item.question_id ===
-                    question.question_id
+        container.innerHTML =
+            "<p>No interview questions available.</p>";
+
+        return;
+    }
+
+
+    questions.forEach(
+        question => {
+
+            const answer =
+                answers.find(
+                    item =>
+                        item.question_id ===
+                        question.question_id
+                );
+
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "interview-card";
+
+
+            /*
+             * Question
+             */
+
+            const questionSection =
+                document.createElement(
+                    "div"
+                );
+
+
+            questionSection.className =
+                "interview-question";
+
+
+            const meta =
+                document.createElement(
+                    "div"
+                );
+
+
+            meta.className =
+                "question-meta";
+
+
+            const category =
+                document.createElement(
+                    "span"
+                );
+
+
+            category.className =
+                "question-category";
+
+
+            category.textContent =
+                question.category ||
+                "General";
+
+
+            const difficulty =
+                document.createElement(
+                    "span"
+                );
+
+
+            difficulty.className =
+                "question-difficulty";
+
+
+            difficulty.textContent =
+                question.difficulty ||
+                "Unknown";
+
+
+            meta.appendChild(
+                category
             );
 
 
-        const card =
-            document.createElement(
-                "article"
+            meta.appendChild(
+                difficulty
             );
 
 
-        card.className =
-            "interview-card";
+            const questionTitle =
+                document.createElement(
+                    "h3"
+                );
 
 
-        /* Question */
+            questionTitle.textContent =
+                question.question ||
+                "Interview Question";
 
-        const questionSection =
-            document.createElement(
-                "div"
+
+            questionSection.appendChild(
+                meta
             );
 
 
-        questionSection.className =
-            "interview-question";
-
-
-        const meta =
-            document.createElement(
-                "div"
+            questionSection.appendChild(
+                questionTitle
             );
 
 
-        meta.className =
-            "question-meta";
+            /*
+             * Answer
+             */
+
+            const answerSection =
+                document.createElement(
+                    "div"
+                );
 
 
-        const category =
-            document.createElement(
-                "span"
+            answerSection.className =
+                "interview-answer";
+
+
+            const answerLabel =
+                document.createElement(
+                    "span"
+                );
+
+
+            answerLabel.className =
+                "answer-label";
+
+
+            answerLabel.textContent =
+                "Suggested Answer";
+
+
+            const answerText =
+                document.createElement(
+                    "p"
+                );
+
+
+            answerText.textContent =
+                answer?.suggested_answer ||
+                "No suggested answer available.";
+
+
+            answerSection.appendChild(
+                answerLabel
             );
 
 
-        category.className =
-            "question-category";
-
-
-        category.textContent =
-            question.category ||
-            "General";
-
-
-        const difficulty =
-            document.createElement(
-                "span"
+            answerSection.appendChild(
+                answerText
             );
 
 
-        difficulty.className =
-            "question-difficulty";
+            /*
+             * Warnings
+             */
+
+            if (
+                Array.isArray(
+                    answer?.warnings
+                )
+            ) {
+
+                answer.warnings.forEach(
+                    warningText => {
+
+                        const warning =
+                            document.createElement(
+                                "div"
+                            );
 
 
-        difficulty.textContent =
-            question.difficulty ||
-            "Unknown";
+                        warning.className =
+                            "interview-warning";
 
 
-        meta.appendChild(
-            category
-        );
+                        warning.textContent =
+                            warningText;
 
 
-        meta.appendChild(
-            difficulty
-        );
-
-
-        const questionTitle =
-            document.createElement(
-                "h3"
-            );
-
-
-        questionTitle.textContent =
-            question.question ||
-            "Question unavailable";
-
-
-        questionSection.appendChild(
-            meta
-        );
-
-
-        questionSection.appendChild(
-            questionTitle
-        );
-
-
-        /* Answer */
-
-        const answerSection =
-            document.createElement(
-                "div"
-            );
-
-
-        answerSection.className =
-            "interview-answer";
-
-
-        const answerLabel =
-            document.createElement(
-                "span"
-            );
-
-
-        answerLabel.className =
-            "answer-label";
-
-
-        answerLabel.textContent =
-            "Suggested Answer";
-
-
-        const answerText =
-            document.createElement(
-                "p"
-            );
-
-
-        answerText.textContent =
-            answer?.suggested_answer ||
-            "No suggested answer available.";
-
-
-        answerSection.appendChild(
-            answerLabel
-        );
-
-
-        answerSection.appendChild(
-            answerText
-        );
-
-
-        /* Warnings */
-
-        if (
-            answer?.warnings &&
-            answer.warnings.length
-        ) {
-
-            answer.warnings.forEach(
-                warningText => {
-
-                    const warning =
-                        document.createElement(
-                            "div"
+                        answerSection.appendChild(
+                            warning
                         );
 
+                    }
+                );
 
-                    warning.className =
-                        "interview-warning";
-
-
-                    warning.textContent =
-                        warningText;
+            }
 
 
-                    answerSection.appendChild(
-                        warning
-                    );
-                }
+            card.appendChild(
+                questionSection
             );
+
+
+            card.appendChild(
+                answerSection
+            );
+
+
+            container.appendChild(
+                card
+            );
+
         }
-
-
-        card.appendChild(
-            questionSection
-        );
-
-
-        card.appendChild(
-            answerSection
-        );
-
-
-        container.appendChild(
-            card
-        );
-    });
+    );
 }
 
 
@@ -1377,12 +1429,12 @@ async function copyTailoredCV() {
     }
 
 
-    const text =
+    const content =
         elements.tailoredCVContent
             .textContent;
 
 
-    if (!text.trim()) {
+    if (!content) {
 
         showError(
             "There is no tailored CV to copy."
@@ -1395,22 +1447,31 @@ async function copyTailoredCV() {
     try {
 
         await navigator.clipboard.writeText(
-            text
+            content
         );
+
+
+        const originalText =
+            elements.copyCVButton
+                .textContent;
 
 
         elements.copyCVButton.textContent =
             "Copied!";
 
 
-        setTimeout(() => {
+        setTimeout(
+            () => {
 
-            elements.copyCVButton.textContent =
-                "Copy CV";
+                elements.copyCVButton.textContent =
+                    originalText;
 
-        }, 2000);
+            },
+            1500
+        );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Copy failed:",
@@ -1421,12 +1482,13 @@ async function copyTailoredCV() {
         showError(
             "Unable to copy the tailored CV."
         );
+
     }
 }
 
 
 /* =========================================================
-   DOWNLOAD MARKDOWN
+   DOWNLOAD TAILORED CV
 ========================================================= */
 
 function downloadTailoredCV() {
@@ -1443,7 +1505,7 @@ function downloadTailoredCV() {
             .textContent;
 
 
-    if (!content.trim()) {
+    if (!content) {
 
         showError(
             "There is no tailored CV to download."
@@ -1479,7 +1541,7 @@ function downloadTailoredCV() {
 
 
     link.download =
-        "tailored_cv.md";
+        "tailored-cv.md";
 
 
     document.body.appendChild(
@@ -1518,32 +1580,61 @@ function setText(
 
         element.textContent =
             String(value);
+
+    }
+}
+
+
+function showSection(
+    element
+) {
+
+    if (element) {
+
+        element.classList.remove(
+            "hidden"
+        );
+
+    }
+}
+
+
+function hideSection(
+    element
+) {
+
+    if (element) {
+
+        element.classList.add(
+            "hidden"
+        );
+
     }
 }
 
 
 /* =========================================================
-   SCROLL TO RESULTS
+   SCROLL
 ========================================================= */
 
 function scrollToResults() {
 
-    if (
-        !elements.resultsSection
-    ) {
+    if (!elements.resultsSection) {
         return;
     }
 
 
-    elements.resultsSection.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-    });
+    elements.resultsSection.scrollIntoView(
+        {
+            behavior: "smooth",
+            block: "start",
+        }
+    );
 }
 
 
 /* =========================================================
-   RESET
+   RESET APPLICATION
 ========================================================= */
 
 function resetApplication() {
@@ -1555,73 +1646,110 @@ function resetApplication() {
     state.requestId = null;
 
 
-    /* Reset CV */
+    /*
+     * Reset form
+     */
 
-    if (elements.cvInput) {
-
-        elements.cvInput.value =
-            "";
+    if (elements.form) {
+        elements.form.reset();
     }
 
+
+    /*
+     * Reset file UI
+     */
 
     if (elements.selectedFile) {
 
         elements.selectedFile.classList.add(
             "hidden"
         );
+
     }
 
 
-    /* Reset job description */
-
-    if (elements.jobDescription) {
-
-        elements.jobDescription.value =
-            "";
-    }
-
+    /*
+     * Reset character counter
+     */
 
     updateCharacterCount();
 
 
-    /* Hide results */
+    /*
+     * Hide result sections
+     */
 
-    if (elements.resultsSection) {
+    hideSection(
+        elements.resultsSection
+    );
 
-        elements.resultsSection.classList.add(
-            "hidden"
+
+    hideSection(
+        elements.tailoredCVSection
+    );
+
+
+    hideSection(
+        elements.interviewSection
+    );
+
+
+    hideSection(
+        elements.newAnalysisSection
+    );
+
+
+    /*
+     * Clear result containers
+     */
+
+    const matchingResults =
+        document.getElementById(
+            "matching-results"
         );
+
+
+    if (matchingResults) {
+        matchingResults.innerHTML = "";
     }
 
 
-    if (elements.tailoredCVSection) {
-
-        elements.tailoredCVSection.classList.add(
-            "hidden"
+    const skillsList =
+        document.getElementById(
+            "skills-list"
         );
+
+
+    if (skillsList) {
+        skillsList.innerHTML = "";
     }
 
 
-    if (elements.interviewSection) {
-
-        elements.interviewSection.classList.add(
-            "hidden"
+    const interviewQuestions =
+        document.getElementById(
+            "interview-questions"
         );
+
+
+    if (interviewQuestions) {
+        interviewQuestions.innerHTML = "";
     }
 
 
-    if (elements.newAnalysisSection) {
+    if (elements.tailoredCVContent) {
 
-        elements.newAnalysisSection.classList.add(
-            "hidden"
-        );
+        elements.tailoredCVContent.textContent =
+            "";
+
     }
 
 
     hideError();
 
 
-    /* Scroll to analysis */
+    /*
+     * Return to analysis section
+     */
 
     const analysisSection =
         document.getElementById(
@@ -1631,9 +1759,12 @@ function resetApplication() {
 
     if (analysisSection) {
 
-        analysisSection.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-        });
+        analysisSection.scrollIntoView(
+            {
+                behavior: "smooth",
+                block: "start",
+            }
+        );
+
     }
 }

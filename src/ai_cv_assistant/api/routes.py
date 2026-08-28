@@ -16,6 +16,30 @@ from src.ai_cv_assistant.services.analysis.analysis_pipeline import (
 )
 
 
+
+def get_analysis_pipeline(
+    request: Request,
+) -> AnalysisPipeline:
+    """
+    Return the application's shared analysis pipeline.
+
+    The pipeline is created once during application startup
+    and stored in app.state.
+    """
+
+    pipeline = getattr(
+        request.app.state,
+        "analysis_pipeline",
+        None,
+    )
+
+    if pipeline is None:
+        raise RuntimeError(
+            "Analysis pipeline is not initialized."
+        )
+
+    return pipeline
+
 router = APIRouter(
     prefix="/api/v1",
     tags=["Analysis"],
@@ -93,9 +117,7 @@ async def analyze_cv(
         # Get pipeline
         # -----------------------------------------------------
 
-        pipeline: AnalysisPipeline = (
-            request.app.state.analysis_pipeline
-        )
+        pipeline = get_analysis_pipeline(request)
 
         # -----------------------------------------------------
         # Run analysis

@@ -154,10 +154,39 @@ class JobMatcher:
             for result in results
         )
 
+        total_requirements = len(results)
+
+        # ---------------------------------------------------------
+        # Calculate overall match score
+        #
+        # Strong match  = 1.0 point
+        # Partial match = 0.5 point
+        # No evidence   = 0.0 points
+        # Conflict       = -0.5 points
+        # ---------------------------------------------------------
+
+        if total_requirements == 0:
+            score = 0.0
+        else:
+            points = (
+                strong_matches * 1.0
+                + partial_matches * 0.5
+                - conflicts * 0.5
+            )
+
+            score = max(
+                0.0,
+                min(
+                    100.0,
+                    (points / total_requirements) * 100,
+                ),
+            )
+
         return MatchSummary(
-            total_requirements=len(results),
+            total_requirements=total_requirements,
             strong_matches=strong_matches,
             partial_matches=partial_matches,
             no_evidence=no_evidence,
             conflicts=conflicts,
+            score=score,
         )
