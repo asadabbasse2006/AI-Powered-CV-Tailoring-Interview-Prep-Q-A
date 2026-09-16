@@ -16,15 +16,11 @@ from src.ai_cv_assistant.services.analysis.analysis_pipeline import (
 )
 
 
-
 def get_analysis_pipeline(
     request: Request,
 ) -> AnalysisPipeline:
     """
     Return the application's shared analysis pipeline.
-
-    The pipeline is created once during application startup
-    and stored in app.state.
     """
 
     pipeline = getattr(
@@ -39,6 +35,7 @@ def get_analysis_pipeline(
         )
 
     return pipeline
+
 
 router = APIRouter(
     prefix="/api/v1",
@@ -90,7 +87,7 @@ async def analyze_cv(
 
     try:
         # -----------------------------------------------------
-        # Read uploaded file
+        # Read uploaded CV
         # -----------------------------------------------------
 
         file_content = await cv.read()
@@ -114,13 +111,15 @@ async def analyze_cv(
             temp_path = Path(temp_file.name)
 
         # -----------------------------------------------------
-        # Get pipeline
+        # Get analysis pipeline
         # -----------------------------------------------------
 
-        pipeline = get_analysis_pipeline(request)
+        pipeline = get_analysis_pipeline(
+            request
+        )
 
         # -----------------------------------------------------
-        # Run analysis
+        # Run complete analysis
         # -----------------------------------------------------
 
         result = pipeline.analyze(
@@ -132,7 +131,9 @@ async def analyze_cv(
         # Store result
         # -----------------------------------------------------
 
-        request.app.state.analysis_store.save(result)
+        request.app.state.analysis_store.save(
+            result
+        )
 
         return result
 
@@ -147,7 +148,9 @@ async def analyze_cv(
 
     except Exception as exc:
 
-        print(f"CV analysis failed: {exc}")
+        print(
+            f"CV analysis failed: {exc}"
+        )
 
         raise HTTPException(
             status_code=500,
@@ -157,7 +160,9 @@ async def analyze_cv(
     finally:
 
         if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
+            temp_path.unlink(
+                missing_ok=True
+            )
 
 
 # =========================================================

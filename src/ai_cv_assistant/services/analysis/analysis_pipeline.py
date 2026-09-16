@@ -20,38 +20,8 @@ from src.ai_cv_assistant.services.matching.matching_pipeline import (
 
 
 class AnalysisPipeline:
-    """
-    Orchestrates the complete CV-to-job analysis workflow.
 
-    Pipeline:
-
-        CV PDF
-          ↓
-        CVPipeline
-          ↓
-        CandidateProfile
-          ↓
-        JDPipeline
-          ↓
-        JobProfile
-          ↓
-        MatchingPipeline
-          ↓
-        CandidateJobMatch
-          ↓
-        CVTailor
-          ↓
-        TailoredCV
-          ↓
-        LLMInterviewPreparer
-          ↓
-        InterviewPreparation
-          ↓
-        AnalysisResult
-
-    The AnalysisPipeline is responsible only for orchestration.
-    Business logic remains inside the individual services.
-    """
+#Asad Abbas
 
     def __init__(
         self,
@@ -92,16 +62,6 @@ class AnalysisPipeline:
             - candidate-job match
             - tailored CV
             - interview preparation
-
-        Raises:
-            TypeError:
-                If the CV path or JD text has an invalid type.
-
-            ValueError:
-                If the CV path or JD text is invalid.
-
-            Exception:
-                Any underlying service error is propagated.
         """
 
         self._validate_inputs(
@@ -110,16 +70,14 @@ class AnalysisPipeline:
         )
 
         request_id = f"request-{uuid4()}"
+
         started_at = perf_counter()
         created_at = datetime.now()
-
-        status = ProcessingStatus.RECEIVED
 
         try:
             # ---------------------------------------------------------
             # Step 1: Process candidate CV
             # ---------------------------------------------------------
-            status = ProcessingStatus.PROCESSING_CV
 
             candidate = self.cv_pipeline.process_file(
                 cv_file_path
@@ -128,7 +86,6 @@ class AnalysisPipeline:
             # ---------------------------------------------------------
             # Step 2: Process job description
             # ---------------------------------------------------------
-            status = ProcessingStatus.PROCESSING_JOB
 
             job = self.jd_pipeline.process(
                 jd_text
@@ -137,7 +94,6 @@ class AnalysisPipeline:
             # ---------------------------------------------------------
             # Step 3: Match candidate against job
             # ---------------------------------------------------------
-            status = ProcessingStatus.MATCHING
 
             match = self.matching_pipeline.process(
                 candidate=candidate,
@@ -147,7 +103,6 @@ class AnalysisPipeline:
             # ---------------------------------------------------------
             # Step 4: Tailor CV for target job
             # ---------------------------------------------------------
-            status = ProcessingStatus.TAILORING
 
             tailored_cv = self.cv_tailor.tailor(
                 candidate=candidate,
@@ -156,9 +111,8 @@ class AnalysisPipeline:
             )
 
             # ---------------------------------------------------------
-            # Step 5: Generate interview preparation using LLM
+            # Step 5: Generate interview preparation
             # ---------------------------------------------------------
-            status = ProcessingStatus.GENERATING_INTERVIEW_PREP
 
             interview_preparation = (
                 self.interview_preparer.prepare(
@@ -172,6 +126,7 @@ class AnalysisPipeline:
             # ---------------------------------------------------------
             # Step 6: Build final result
             # ---------------------------------------------------------
+
             completed_at = datetime.now()
 
             processing_time = (
@@ -197,13 +152,6 @@ class AnalysisPipeline:
             )
 
         except Exception:
-            # ---------------------------------------------------------
-            # Do not hide the original service exception.
-            #
-            # The orchestrator currently propagates the exception.
-            # This keeps debugging and testing straightforward.
-            # ---------------------------------------------------------
-            status = ProcessingStatus.FAILED
             raise
 
     @staticmethod
@@ -223,14 +171,7 @@ class AnalysisPipeline:
                 "cv_file_path must be a string or pathlib.Path."
             )
 
-        if isinstance(cv_file_path, str) and not cv_file_path.strip():
-            raise ValueError(
-                "cv_file_path cannot be empty."
-            )
-
-        if isinstance(cv_file_path, Path) and not str(
-            cv_file_path
-        ).strip():
+        if not str(cv_file_path).strip():
             raise ValueError(
                 "cv_file_path cannot be empty."
             )

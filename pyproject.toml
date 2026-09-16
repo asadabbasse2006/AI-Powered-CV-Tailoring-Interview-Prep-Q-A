@@ -15,7 +15,9 @@ dependencies = [
     "pytest (>=9.1.1,<10.0.0)",
     "pymupdf (>=1.28.2,<2.0.0)",
     "google-genai (>=2.19.0,<3.0.0)",
-    "python-multipart (>=0.0.32,<0.0.33)"
+    "python-multipart (>=0.0.32,<0.0.33)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "beautifulsoup4 (>=4.15.0,<5.0.0)"
 ]
 
 [tool.poetry]

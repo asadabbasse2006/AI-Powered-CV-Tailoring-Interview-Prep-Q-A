@@ -25,6 +25,7 @@ from src.ai_cv_assistant.services.matching.job_matcher import JobMatcher
 from src.ai_cv_assistant.services.matching.matching_pipeline import (
     MatchingPipeline,
 )
+
 from src.ai_cv_assistant.config import Settings
 
 
@@ -34,7 +35,7 @@ def create_analysis_pipeline(
 ) -> AnalysisPipeline:
 
     # ---------------------------------------------------------
-    # 1. Create the LLM client
+    # 1. Create LLM client
     # ---------------------------------------------------------
 
     llm_client = GeminiLLMClient(
@@ -94,7 +95,7 @@ def create_analysis_pipeline(
     )
 
     # ---------------------------------------------------------
-    # 7. Compose the complete analysis pipeline
+    # 7. Compose complete analysis pipeline
     # ---------------------------------------------------------
 
     return AnalysisPipeline(

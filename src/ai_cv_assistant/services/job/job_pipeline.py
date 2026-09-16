@@ -1,45 +1,56 @@
 from src.ai_cv_assistant.schemas.candidate import CandidateProfile
 from src.ai_cv_assistant.schemas.job import JobProfile
 from src.ai_cv_assistant.schemas.matching import CandidateJobMatch
-from src.ai_cv_assistant.services.job.jd_extractor import JDExtractor
-from src.ai_cv_assistant.services.job.jd_validator import JDValidator
-from src.ai_cv_assistant.services.job.match_engine import MatchEngine
+
+from src.ai_cv_assistant.services.job.jd_pipeline import JDPipeline
+from src.ai_cv_assistant.services.matching.match_engine import MatchEngine
 
 
 class JobPipeline:
     """
-    Orchestrates job-description extraction, validation,
-    and candidate-job matching.
+    Orchestrates job-posting processing and candidate-job matching.
+
+    Flow:
+
+        Job URL
+            ↓
+        JDPipeline
+            ↓
+        JobProfile
+            ↓
+        MatchEngine
+            ↓
+        CandidateJobMatch
     """
 
     def __init__(
         self,
-        jd_extractor: JDExtractor,
-        jd_validator: JDValidator,
+        jd_pipeline: JDPipeline,
         match_engine: MatchEngine,
     ):
-        self.jd_extractor = jd_extractor
-        self.jd_validator = jd_validator
+        self.jd_pipeline = jd_pipeline
         self.match_engine = match_engine
 
     def analyze(
         self,
-        jd_text: str,
+        job_url: str,
         candidate: CandidateProfile,
     ) -> tuple[JobProfile, CandidateJobMatch]:
         """
-        Extract and validate a job description, then match
-        the candidate against the validated job.
+        Fetch and process a job posting URL, then match the
+        candidate against the resulting JobProfile.
         """
 
-        if not isinstance(jd_text, str):
+        if not isinstance(job_url, str):
             raise TypeError(
-                "Job description text must be a string."
+                "job_url must be a string."
             )
 
-        if not jd_text.strip():
+        job_url = job_url.strip()
+
+        if not job_url:
             raise ValueError(
-                "Job description text cannot be empty."
+                "job_url cannot be empty."
             )
 
         if not isinstance(candidate, CandidateProfile):
@@ -47,19 +58,21 @@ class JobPipeline:
                 "candidate must be a CandidateProfile."
             )
 
-        # Step 1: Extract structured job data.
-        extracted_job = self.jd_extractor.extract(jd_text)
+        # ---------------------------------------------------------
+        # Step 1: Fetch, extract and validate job posting
+        # ---------------------------------------------------------
 
-        # Step 2: Validate the extracted job data.
-        validated_job = self.jd_validator.validate(
-            extracted_job,
-            jd_text,
+        job = self.jd_pipeline.process(
+            job_url
         )
 
-        # Step 3: Match candidate against the validated job.
-        match_result = self.match_engine.match(
-            candidate,
-            validated_job,
+        # ---------------------------------------------------------
+        # Step 2: Match candidate against job
+        # ---------------------------------------------------------
+
+        match = self.match_engine.match(
+            candidate=candidate,
+            job=job,
         )
 
-        return validated_job, match_result
+        return job, match
